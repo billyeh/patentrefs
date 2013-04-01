@@ -22,7 +22,7 @@ if not os.path.exists('reffedby_sample.csv'):
 with open('reffedby_sample.csv', 'w+') as newfile:
   newfile.write(samples)
 
-## Note: get output from command line, copy to reffedby_sample.csv
+## Note: selected random patents and references now extracted to reffedby_sample.csv
 
 ## Turn the sample of patents from our data referencing each random
 ## patent into a hash
