@@ -17,7 +17,9 @@ Following the instructions above results in two files, `uspto_ref_hash.json`, an
 
 Each hash's keys are the 200 random patents selected from the [Fung repository](https://github.com/funginstitute/referencedby). The corresponding values list the patents that reference each key.
 
-A side-by-side comparison of the two has sufficed so far, but later `diff.py` may be used to analyze the discrepancies between Fung and USPTO data.
+A side-by-side comparison of the two has sufficed so far, but later `diff.py` may be used to analyze the discrepancies between Fung and USPTO data. `count.py` is a simple way to verify that the computer is reading in all 67 million lines from `reffedby.csv`.
+
+__Note__: Processing takes several minutes, so the script will not run through all the code again if resulting files already exist. To run through the entire process, make sure to delete `reffedby_sample.csv`, `ref_hash.json`, `uspto_ref_hash.json`, and the `uspto_refs` folder from the directory first.
 
 ### Credit
 
