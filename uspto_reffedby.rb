@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'json'
+require 'csv'
 class ReffedBy
   def initialize(patent)
     # URL for search on patent number defined above
@@ -26,12 +27,11 @@ class ReffedBy
 
 end
 
-ref_hash = JSON.load(IO.read('ref_hash.json'))
 uspto_ref_hash = Hash.new
 
 puts 'These patents may have more than refs, check USPTO'
-for patent in ref_hash.keys
-  uspto_ref_hash[patent] = ReffedBy.new(patent[1..-1]).uspto_refs_list.reverse
+CSV.foreach("clean_200_random.csv") do |patent|
+  uspto_ref_hash[patent] = ReffedBy.new(patent[0]).uspto_refs_list.reverse
 end
 
 File.open('uspto_ref_hash.json', 'w+') do |f|
