@@ -15,6 +15,8 @@ Code for doing a simple comparison between USPTO data and data from Berkeley Fun
 
 Following the instructions above results in two files, `uspto_ref_hash.json`, and `ref_hash.json`, corresponding to data from the USPTO and Fung Institute, respectively.
 
+(It may be easier to analyze the two side by side if you use a [JSON formatter](http://jsonformat.com/) after obtaining the results.)
+
 Each hash's keys are the 200 random patents selected from the [Fung repository](https://github.com/funginstitute/referencedby). The corresponding values list the patents that reference each key.
 
 A side-by-side comparison of the two has sufficed so far, but later `diff.py` may be used to analyze the discrepancies between Fung and USPTO data. `count.py` is a simple way to verify that the computer is reading in all 67 million lines from `reffedby.csv`.

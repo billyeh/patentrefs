@@ -12,9 +12,10 @@ class ReffedBy
     rows = doc.xpath("//table//tr[1 <= position() and position() < 200]/td[2]/a/text()")
 
     @uspto_refs_list = Array.new
-    puts rows.length
+    if rows.length >= 50
+      puts patent
+    end
     rows.each do |r|
-      puts "0" + r.to_s.gsub(/,/,'')
       @uspto_refs_list.push("0" + r.to_s.gsub(/,/,''))
     end
 
@@ -28,8 +29,9 @@ end
 ref_hash = JSON.load(IO.read('ref_hash.json'))
 uspto_ref_hash = Hash.new
 
+puts 'These patents may have more than refs, check USPTO'
 for patent in ref_hash.keys
-  uspto_ref_hash[patent] = ReffedBy.new(patent).uspto_refs_list.reverse
+  uspto_ref_hash[patent] = ReffedBy.new(patent[1..-1]).uspto_refs_list.reverse
 end
 
 File.open('uspto_ref_hash.json', 'w+') do |f|

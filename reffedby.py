@@ -1,4 +1,4 @@
-import csv, json, os
+import csv, json, os, sqlite3
 from urllib import urlopen
 
 ## Process reffedby.csv into a random sample of 200
@@ -6,18 +6,35 @@ from urllib import urlopen
 
 random_patents = []
 
-with open('clean_200_random.csv', 'rb') as csvfile:
-  reader = csv.reader(csvfile, delimiter=' ')
-  for row in reader:
-    random_patents += row
+print('Checking for data from Fung Institute...')
+try:
+  with open('clean_200_random.csv', 'rb') as csvfile:
+    reader = csv.reader(csvfile, delimiter=' ')
+    for row in reader:
+      random_patents += row
+except:
+  print('Error: download clean_200_random.csv first, link in readme')
+  raise SystemExit
 
 samples = ''
+"""
 if not os.path.exists('reffedby_sample.csv'):
   with open('reffedby.csv', 'rb') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
       if (row[0] in random_patents):
         samples += ', '.join(row) + '\n'
+"""
+if not os.path.exists('reffedby_sample.csv'):
+  try:
+    conn = sqlite3.connect('reffedby.sqlite3')
+  except:
+    print('Error: download reffedby.sqlite3 first, link in readme')
+    raise SystemExit
+  for patent in random_patents:
+    print(patent)
+    for row in conn.execute('SELECT * FROM reffedby WHERE patent=?', ['0' + patent]):
+      samples += ', '.join(row) + '\n'
 
 with open('reffedby_sample.csv', 'w+') as newfile:
   newfile.write(samples)
@@ -39,6 +56,7 @@ if not os.path.exists('ref_hash.json'):
 
   open('ref_hash.json', 'w').write(json.dumps(ref_hash))
 
+print('Checking for data from USPTO...')
 ## Note: ref data now in ref_hash.json
 
 ## Download USPTO webpages for each random patent
@@ -49,14 +67,14 @@ url = base_url
 uspto_ref_hash = {}
 
 if not os.path.exists('uspto_refs'):
-  print('hello')
   os.makedirs('uspto_refs')
 
 for patent_number in ref_hash.keys():
-  url += patent_number
-  d = './uspto_refs/' + patent_number + '.html'
+  url += patent_number[1:]
+  d = './uspto_refs/' + patent_number[1:] + '.html'
   if not os.path.exists(d):
-    open('./uspto_refs/' + patent_number + '.html', 'w+').write((urlopen(url).read().decode('utf-8')))
+    print(patent_number)
+    open('./uspto_refs/' + patent_number[1:] + '.html', 'w+').write((urlopen(url).read().decode('utf-8')))
   url = base_url
 
 ## Note: HTML pages now in ./uspto_refs
