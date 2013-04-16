@@ -1,3 +1,5 @@
+#!/usr/bin/ruby
+
 require 'nokogiri'
 require 'open-uri'
 require 'csv'
@@ -16,6 +18,11 @@ class GoogleFetcher
     outFile.close
   end
 
+end
+
+puts 'Checking for data from Google...'
+if not File.directory?("./google_refs")
+  Dir.mkdir('./google_refs')
 end
 
 CSV.foreach("clean_200_random.csv") do |patent|
@@ -51,3 +58,5 @@ end
 File.open('google_ref_hash.json', 'w+') do |f|
   f.write(google_ref_hash.to_json)
 end
+
+puts 'Done!'

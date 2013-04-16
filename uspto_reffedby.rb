@@ -1,7 +1,10 @@
+#!/usr/bin/ruby
+
 require 'nokogiri'
 require 'json'
 require 'csv'
 class ReffedBy
+
   def initialize(patent)
     # URL for search on patent number defined above
     refquery = "http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2Fsearch-adv.htm&r=0&f=S&l=50&d=PALL&Query=ref/#{patent}"
@@ -25,6 +28,8 @@ end
 
 uspto_ref_hash = Hash.new
 
+puts 'Checking for data from USPTO...'
+
 puts 'These patents may have more than 50 refs, check USPTO website'
 CSV.foreach("clean_200_random.csv") do |patent|
   ref = ReffedBy.new(patent[0])
@@ -37,3 +42,5 @@ end
 File.open('uspto_ref_hash.json', 'w+') do |f|
   f.write(uspto_ref_hash.to_json)
 end
+
+puts 'Done!'
