@@ -3,7 +3,35 @@
 require 'nokogiri'
 require 'json'
 require 'csv'
-class ReffedBy
+require 'open-uri'
+
+class USPTOFetcher
+
+  def initialize(argv)
+    begin
+      patentpage = Nokogiri::HTML(open("http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2Fsearch-adv.htm&r=0&f=S&l=50&d=PALL&Query=ref/#{argv}"))
+    rescue OpenURI::HTTPError
+      patentpage = "link broken"
+    end
+    outFile = File.new("./uspto_refs/#{argv}.html", "a+")
+    outFile.puts(patentpage)
+    outFile.close
+  end
+  
+end
+
+puts 'Checking for data from USPTO...'
+if not File.directory?("./uspto_refs")
+  Dir.mkdir('./uspto_refs')
+end
+
+CSV.foreach("clean_200_random.csv") do |patent|
+  if not File.file?("./uspto_refs/" + patent[0] + ".html")
+    scrape = USPTOFetcher.new(patent[0])
+  end
+end
+
+class USPTOScraper
 
   def initialize(patent)
     # URL for search on patent number defined above
@@ -32,7 +60,7 @@ puts 'Checking for data from USPTO...'
 
 puts 'These patents may have more than 50 refs, check USPTO website'
 CSV.foreach("clean_200_random.csv") do |patent|
-  ref = ReffedBy.new(patent[0])
+  ref = USPTOScraper.new(patent[0])
   uspto_ref_hash[patent[0]] = ref.uspto_refs_list.reverse
   if ref.uspto_refs_list.length >= 50
     puts patent[0]
