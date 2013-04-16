@@ -56,12 +56,12 @@ if not os.path.exists('ref_hash.json'):
 
   open('ref_hash.json', 'w').write(json.dumps(ref_hash))
 
-print('Checking for data from USPTO...')
 ## Note: ref data now in ref_hash.json
+
+print('Checking for data from USPTO...')
 
 ## Download USPTO webpages for each random patent
 
-ref_hash = json.loads(open('ref_hash.json', 'r').read())
 base_url = 'http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2Fsearch-adv.htm&r=0&f=S&l=50&d=PALL&Query=ref/'
 url = base_url
 uspto_ref_hash = {}
@@ -69,7 +69,7 @@ uspto_ref_hash = {}
 if not os.path.exists('uspto_refs'):
   os.makedirs('uspto_refs')
 
-for patent_number in ref_hash.keys():
+for patent_number in open('clean_200_random.csv').read().split('\n'):
   url += patent_number[1:]
   d = './uspto_refs/' + patent_number[1:] + '.html'
   if not os.path.exists(d):
