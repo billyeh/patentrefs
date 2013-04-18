@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 require 'nokogiri'
 require 'open-uri'
@@ -27,6 +27,7 @@ end
 
 CSV.foreach("clean_200_random.csv") do |patent|
   if not File.file?("./google_refs/" + patent[0] + ".html")
+    puts patent[0]
     scrape = GoogleFetcher.new(patent[0])
   end
 end
@@ -35,6 +36,7 @@ class GoogleScraper
 
   def initialize(patent) # default patent
     patentpage = Nokogiri::HTML(open("./google_refs/#{patent}.html"))
+
     @google_refs_list = Array.new
     patentpage.css('td.patent-data-table-td > a').each do |node|
       if node.parent.parent.parent.parent.text.match(/^\nReferenced by/)
@@ -56,7 +58,7 @@ CSV.foreach("clean_200_random.csv") do |patent|
 end
 
 File.open('google_ref_hash.json', 'w+') do |f|
-  f.write(google_ref_hash.to_json)
+  f.write(JSON.pretty_generate(google_ref_hash))
 end
 
 puts 'Done!'
